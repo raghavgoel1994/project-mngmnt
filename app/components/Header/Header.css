@@ -1,0 +1,13 @@
+.header-wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: #007bff;
+  padding: 16px;
+}
+
+.header-item {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  padding: 0 16px;
+}

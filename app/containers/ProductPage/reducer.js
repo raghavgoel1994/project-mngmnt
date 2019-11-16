@@ -13,7 +13,7 @@ export const initialState = {
 };
 
 /* eslint-disable default-case, no-param-reassign */
-const languageProviderReducer = (state = initialState, action) =>
+const ProductProviderReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case CHANGE_LOCALE:
@@ -22,4 +22,4 @@ const languageProviderReducer = (state = initialState, action) =>
     }
   });
 
-export default languageProviderReducer;
+export default ProductProviderReducer;
