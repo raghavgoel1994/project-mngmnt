@@ -1,14 +1,24 @@
-/*
- *
- * LanguageProvider actions
- *
- */
+import {
+  GET_PROJECT_COLLECTION,
+  GET_PROJECT_LIST,
+  CREATE_PROJECT,
+} from './constants';
 
-import { CHANGE_LOCALE } from './constants';
-
-export function changeLocale(languageLocale) {
+export function getProjectCollection() {
   return {
-    type: CHANGE_LOCALE,
-    locale: languageLocale,
+    type: GET_PROJECT_COLLECTION,
+  };
+}
+
+export function getProjectList() {
+  return {
+    type: GET_PROJECT_LIST,
+  };
+}
+
+export function CreateProject(payload) {
+  return {
+    type: CREATE_PROJECT,
+    payload,
   };
 }

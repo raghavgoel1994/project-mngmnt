@@ -5,19 +5,47 @@
  */
 import produce from 'immer';
 
-import { CHANGE_LOCALE } from './constants';
-import { DEFAULT_LOCALE } from '../../i18n';
+import {
+  GET_PROJECT_COLLECTION,
+  GET_PROJECT_COLLECTION_FAILURE,
+  GET_PROJECT_COLLECTION_SUCCESS,
+  GET_PROJECT_LIST,
+  GET_PROJECT_LIST_FAILURE,
+  GET_PROJECT_LIST_SUCCESS,
+} from './constants';
 
 export const initialState = {
-  locale: DEFAULT_LOCALE,
+  isFetching: false,
+  isError: false,
+  projectCollection: {},
+  projectList: {},
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const ProductProviderReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case CHANGE_LOCALE:
-        draft.locale = action.locale;
+      case GET_PROJECT_COLLECTION:
+        draft.isFetching = true;
+        break;
+      case GET_PROJECT_COLLECTION_SUCCESS:
+        draft.isFetching = false;
+        draft.projectCollection = action.payload;
+        break;
+      case GET_PROJECT_COLLECTION_FAILURE:
+        draft.isFetching = false;
+        draft.isError = true;
+        break;
+      case GET_PROJECT_LIST:
+        draft.isFetching = true;
+        break;
+      case GET_PROJECT_LIST_SUCCESS:
+        draft.isFetching = false;
+        draft.projectList = action.payload;
+        break;
+      case GET_PROJECT_LIST_FAILURE:
+        draft.isFetching = false;
+        draft.isError = true;
         break;
     }
   });

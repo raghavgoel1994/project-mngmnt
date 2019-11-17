@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 import { compose } from 'redux';
-import { ProductPage } from '../containers/ProductPage';
+import ProductPage from '../containers/ProductPage';
 
 export const routes = [
   {

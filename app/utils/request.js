@@ -54,14 +54,14 @@ export default function request(url, options = {}) {
   //   }
   let dataHeaders = {};
   dataHeaders = { ...defaults.headers };
-  //   if (options.includeTokens) {
-  //     const xxsrfToken = getCookie && getCookie('XSRF-TOKEN');
-  //     dataHeaders = {
-  //       ...dataHeaders,
-  //       'X-XSRF-TOKEN': xxsrfToken,
-  //       'X-CSRF-TOKEN': xxsrfToken,
-  //     };
-  //   }
+  if (options.includeTokens) {
+    //const xxsrfToken = getCookie && getCookie('XSRF-TOKEN');
+    dataHeaders = {
+      ...dataHeaders,
+      Authorization:
+        'Basic OmU3YWdhb2V5ZXFxdDVjZTdtYmVzNmp0cXlwZGZwd2JuYXptajI3dWttaDczaHo3NmpzNWE=',
+    };
+  }
   dataHeaders = { ...dataHeaders, ...options.headers };
   const data = {
     ...defaults,

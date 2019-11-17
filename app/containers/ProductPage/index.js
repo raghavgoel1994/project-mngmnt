@@ -1,16 +1,62 @@
-/*
- *
- * LanguageProvider
- *
- * this component connects the redux state language locale to the
- * IntlProvider component and i18n messages (loaded from `app/translations`)
- */
-
-import React from 'react';
+import React, { memo } from 'react';
 import { connect } from 'react-redux';
 import './index.css';
+import { getProjectCollection, getProjectList, CreateProject } from './actions';
+import injectReducer from 'utils/injectReducer';
+import injectSaga from 'utils/injectSaga';
+import { compose } from 'redux';
+import saga from './saga';
+import reducer from './reducer';
+import { DAEMON } from './../../constants/text';
+import { isEmpty } from 'lodash';
+
+const key = 'projectPage';
+const withSaga = injectSaga({ key, saga, mode: DAEMON });
+const withReducer = injectReducer({ key, reducer });
 
 export function ProductPage(props) {
+  const {
+    getProjectCollectionData,
+    projectCollection,
+    getProjectList,
+    projectList,
+    CreateProject,
+  } = props;
+
+  const [projectName, setProjectName] = React.useState('');
+  const [projectDescription, setProjectDescription] = React.useState('');
+  const [versionType, setVersionType] = React.useState('');
+  const [sprintCount, setSprintCount] = React.useState('');
+  const [sprintDate, setSprintDate] = React.useState('');
+
+  React.useEffect(() => {
+    getProjectCollectionData();
+  }, []);
+
+  const handleChange = () => {
+    getProjectList();
+  };
+
+  const isCreateDisabled = () => {
+    return (
+      isEmpty(projectName) ||
+      isEmpty(projectDescription) ||
+      isEmpty(sprintCount) ||
+      isEmpty(sprintDate) ||
+      isEmpty(versionType)
+    );
+  };
+
+  const onCreateClick = () => {
+    CreateProject({
+      Name: projectName,
+      Description: projectDescription,
+      State: versionType,
+      Capabilities: sprintCount,
+      LastUpdateTime: sprintDate,
+    });
+  };
+
   return (
     <div className="container">
       <div className="page-title">Create Project</div>
@@ -20,11 +66,14 @@ export function ProductPage(props) {
       </div>
       <div className="row justify-content-start container-1">
         <label className="col-3">Project Collection Name</label>
-        <select className="col-4 custom-select">
-          <option selected>Choose...</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+        <select className="col-4 custom-select" onChange={handleChange}>
+          {projectCollection &&
+            projectCollection.value &&
+            projectCollection.value.map(projColObj => (
+              <React.Fragment key={projColObj.id}>
+                <option value={projColObj.id}>{projColObj.name}</option>
+              </React.Fragment>
+            ))}
         </select>
       </div>
       <div className="container-2">
@@ -41,30 +90,73 @@ export function ProductPage(props) {
           <tbody>
             <tr>
               <td>
-                <input type="text" placeholder="Project 1" />
+                <input
+                  type="text"
+                  name="projectName"
+                  value={projectName}
+                  placeholder="Project 1"
+                  onChange={e => {
+                    setProjectName(e.target.value);
+                  }}
+                />
               </td>
               <td>
-                <input type="text" placeholder="Project 1" />
+                <input
+                  type="text"
+                  name="projectDescription"
+                  value={projectDescription}
+                  placeholder="Project 1"
+                  onChange={e => {
+                    setProjectDescription(e.target.value);
+                  }}
+                />
               </td>
               <td>
-                <select className="custom-select">
-                  <option selected>Choose...</option>
+                <select
+                  name="versionType"
+                  value={versionType}
+                  className="custom-select"
+                  onChange={e => {
+                    setVersionType(e.target.value);
+                  }}
+                >
                   <option value="1">One</option>
                   <option value="2">Two</option>
                   <option value="3">Three</option>
                 </select>
               </td>
               <td>
-                <input type="number" placeholder="0" />
+                <input
+                  type="number"
+                  name="sprintCount"
+                  value={sprintCount}
+                  placeholder="0"
+                  onChange={e => {
+                    setSprintCount(e.target.value);
+                  }}
+                />
               </td>
               <td>
-                <input type="date" placeholder="" />
+                <input
+                  type="date"
+                  name="SprintStartDate"
+                  value={sprintDate}
+                  placeholder=""
+                  onChange={e => {
+                    setSprintDate(e.target.value);
+                  }}
+                />
               </td>
             </tr>
           </tbody>
         </table>
         <p className="text-right">
-          <button type="button" className="btn btn-primary">
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={isCreateDisabled()}
+            onClick={onCreateClick}
+          >
             Create
           </button>
         </p>
@@ -82,18 +174,22 @@ export function ProductPage(props) {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Test project</td>
-              <td>project id</td>
-              <td>test</td>
-              <td>0</td>
-              <td>1</td>
-              <td>
-                <button type="button" className="btn btn-link">
-                  edit
-                </button>
-              </td>
-            </tr>
+            {projectList &&
+              projectList.value &&
+              projectList.value.map(projLstObj => (
+                <tr>
+                  <td>{projLstObj.name}</td>
+                  <td>{projLstObj.id}</td>
+                  <td>{projLstObj.description}</td>
+                  <td>{projLstObj.state}</td>
+                  <td>{projLstObj.visibility}</td>
+                  <td>
+                    <button type="button" className="btn btn-link">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -101,19 +197,31 @@ export function ProductPage(props) {
   );
 }
 
-export function mapStateToProps({ global }) {
+export function mapStateToProps({ projectPage }) {
   return {
-    userInfo: global.userInfo,
+    isFetching: projectPage ? projectPage.isFetching : false,
+    isError: projectPage ? projectPage.isError : false,
+    projectCollection: projectPage ? projectPage.projectCollection : {},
+    projectList: projectPage ? projectPage.projectList : {},
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    getProjectCollectionData: () => dispatch(getProjectCollection()),
+    getProjectList: () => dispatch(getProjectList()),
+    CreateProject: params => dispatch(CreateProject(params)),
   };
 }
 
-export default connect(
+const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  withSaga,
+  withReducer,
+  memo,
 )(ProductPage);
