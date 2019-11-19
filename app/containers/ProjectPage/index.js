@@ -7,14 +7,14 @@ import injectSaga from 'utils/injectSaga';
 import { compose } from 'redux';
 import saga from './saga';
 import reducer from './reducer';
-import { DAEMON } from './../../constants/text';
+import { DAEMON } from '../../constants/text';
 import { isEmpty } from 'lodash';
 
 const key = 'projectPage';
 const withSaga = injectSaga({ key, saga, mode: DAEMON });
 const withReducer = injectReducer({ key, reducer });
 
-export function ProductPage(props) {
+export function ProjectPage(props) {
   const {
     getProjectCollectionData,
     projectCollection,
@@ -177,7 +177,7 @@ export function ProductPage(props) {
             {projectList &&
               projectList.value &&
               projectList.value.map(projLstObj => (
-                <tr>
+                <tr key={projLstObj.id}>
                   <td>{projLstObj.name}</td>
                   <td>{projLstObj.id}</td>
                   <td>{projLstObj.description}</td>
@@ -224,4 +224,4 @@ export default compose(
   withSaga,
   withReducer,
   memo,
-)(ProductPage);
+)(ProjectPage);

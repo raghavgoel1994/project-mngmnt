@@ -1,9 +1,3 @@
-/*
- *
- * LanguageProvider constants
- *
- */
-
 export const GET_PROJECT_COLLECTION = 'app/ProjectPage/GET_PROJECT_COLLECTION';
 export const GET_PROJECT_COLLECTION_SUCCESS = 'app/ProjectPage/GET_PROJECT_COLLECTION_SUCCESS';
 export const GET_PROJECT_COLLECTION_FAILURE = 'app/ProjectPage/GET_PROJECT_COLLECTION_FAILURE';

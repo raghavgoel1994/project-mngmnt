@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 import { compose } from 'redux';
-import ProductPage from '../containers/ProductPage';
+import ProjectPage from '../containers/ProjectPage';
 
 export const routes = [
   {
     path: '/',
-    component: ProductPage,
+    component: ProjectPage,
     exact: true,
   },
   {
     path: '/project',
-    component: ProductPage,
+    component: ProjectPage,
     exact: true,
   },
 ];

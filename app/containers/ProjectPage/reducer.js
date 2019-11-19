@@ -1,8 +1,3 @@
-/*
- *
- * LanguageProvider reducer
- *
- */
 import produce from 'immer';
 
 import {
@@ -22,7 +17,7 @@ export const initialState = {
 };
 
 /* eslint-disable default-case, no-param-reassign */
-const ProductProviderReducer = (state = initialState, action) =>
+const ProjectProviderReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case GET_PROJECT_COLLECTION:
@@ -50,4 +45,4 @@ const ProductProviderReducer = (state = initialState, action) =>
     }
   });
 
-export default ProductProviderReducer;
+export default ProjectProviderReducer;
