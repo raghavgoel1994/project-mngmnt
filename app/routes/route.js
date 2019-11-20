@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Route, Switch, withRouter } from 'react-router';
 import { compose } from 'redux';
 import ProjectPage from '../containers/ProjectPage';
+import TeamPage from '../containers/TeamPage';
 
 export const routes = [
   {
@@ -14,6 +15,11 @@ export const routes = [
     component: ProjectPage,
     exact: true,
   },
+  {
+    path: '/team',
+    component: TeamPage,
+    exact: true,
+  }
 ];
 
 function Router(props) {
