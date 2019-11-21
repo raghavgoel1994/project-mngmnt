@@ -57,3 +57,12 @@ label {
 .table-layout {
   table-layout: fixed;
 }
+
+.error-description {
+  position: absolute;
+  color: #af2222;
+}
+
+.relative {
+  position: relative;
+}

@@ -25,15 +25,24 @@ export function ProjectPage(props) {
 
   const [projectName, setProjectName] = React.useState('');
   const [projectDescription, setProjectDescription] = React.useState('');
-  const [versionType, setVersionType] = React.useState('');
+  const [versionType, setVersionType] = React.useState('1');
   const [sprintCount, setSprintCount] = React.useState('');
   const [sprintDate, setSprintDate] = React.useState('');
+  const [projectCollectionID, setProjectCollectionID] = React.useState(false);
+  const [showErrors, setShowErrors] = React.useState(false);
 
   React.useEffect(() => {
     getProjectCollectionData();
   }, []);
 
-  const handleChange = () => {
+  React.useEffect(() => {
+    !isEmpty(projectCollection) &&
+      !isEmpty(projectCollection.value) &&
+      setProjectCollectionID(projectCollection.value[0].id);
+  }, [projectCollection]);
+
+  const handleChange = e => {
+    setProjectCollectionID(e.target.value);
     getProjectList();
   };
 
@@ -43,18 +52,24 @@ export function ProjectPage(props) {
       isEmpty(projectDescription) ||
       isEmpty(sprintCount) ||
       isEmpty(sprintDate) ||
-      isEmpty(versionType)
+      isEmpty(versionType) ||
+      isEmpty(projectCollectionID)
     );
   };
 
   const onCreateClick = () => {
-    CreateProject({
-      Name: projectName,
-      Description: projectDescription,
-      State: versionType,
-      Capabilities: sprintCount,
-      LastUpdateTime: sprintDate,
-    });
+    if (isCreateDisabled()) {
+      setShowErrors(true);
+    } else {
+      setShowErrors(false);
+      CreateProject({
+        Name: projectName,
+        Description: projectDescription,
+        State: versionType,
+        Capabilities: sprintCount,
+        LastUpdateTime: sprintDate,
+      });
+    }
   };
 
   return (
@@ -64,17 +79,30 @@ export function ProjectPage(props) {
         Select project Collection name to get list of projects, To create new
         project, please provide project details and click on create button
       </div>
-      <div className="row justify-content-start container-1">
-        <label className="col-3">Project Collection Name</label>
-        <select className="col-4 custom-select" onChange={handleChange}>
-          {projectCollection &&
-            projectCollection.value &&
-            projectCollection.value.map(projColObj => (
-              <React.Fragment key={projColObj.id}>
-                <option value={projColObj.id}>{projColObj.name}</option>
-              </React.Fragment>
-            ))}
-        </select>
+      <div className="container-1">
+        <div className="row justify-content-start">
+          <label className="col-3">Project Collection Name</label>
+          <div className="col-4 relative">
+            <select
+              className="custom-select"
+              value={projectCollectionID}
+              onChange={handleChange}
+            >
+              {projectCollection &&
+                projectCollection.value &&
+                projectCollection.value.map(projColObj => (
+                  <React.Fragment key={projColObj.id}>
+                    <option value={projColObj.id}>{projColObj.name}</option>
+                  </React.Fragment>
+                ))}
+            </select>
+            {isEmpty(projectCollection) && showErrors && (
+              <div className="error-description">
+                Please select a Collection
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       <div className="container-2">
         <table className="table table-layout">
@@ -99,6 +127,9 @@ export function ProjectPage(props) {
                     setProjectName(e.target.value);
                   }}
                 />
+                {isEmpty(projectName) && showErrors && (
+                  <div className="error-description">Name is Required</div>
+                )}
               </td>
               <td>
                 <input
@@ -132,9 +163,15 @@ export function ProjectPage(props) {
                   value={sprintCount}
                   placeholder="0"
                   onChange={e => {
-                    setSprintCount(e.target.value);
+                    let count = e.target.value;
+                    count >= 0 && setSprintCount(count);
                   }}
                 />
+                {isEmpty(sprintCount) && showErrors && (
+                  <div className="error-description">
+                    Sprint Count is Required
+                  </div>
+                )}
               </td>
               <td>
                 <input
@@ -146,6 +183,11 @@ export function ProjectPage(props) {
                     setSprintDate(e.target.value);
                   }}
                 />
+                {isEmpty(sprintDate) && showErrors && (
+                  <div className="error-description">
+                    Sprint Start Date is Required
+                  </div>
+                )}
               </td>
             </tr>
           </tbody>
@@ -154,7 +196,6 @@ export function ProjectPage(props) {
           <button
             type="button"
             className="btn btn-primary"
-            disabled={isCreateDisabled()}
             onClick={onCreateClick}
           >
             Create
